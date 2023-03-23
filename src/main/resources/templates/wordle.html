@@ -64,14 +64,15 @@
 </head>
 <body>
 	<div class="Wordle">
-		<h1 th:if="${won}" class="Wordle-Message">Браво! Позна думата с опита <div th:utext="${guesCount}"></div> 🎉
+		<h1 th:if="${game.state.name() == 'WIN'}" class="Wordle-Message">Браво! Позна думата с <span th:text="${game.guesses.size()}">6</span> опита 🎉
 			<a href="/">Играй отновo</a>
- 		</h1>
- 		<h1 th:if="${lost}" class="Wordle-Message">Жалко! Не успя да познаеш думата 😢
- 			<a href="/">Опитай пак</a>
 		</h1>
+		
+		<h1 th:if="${game.state.name() == 'LOSS'}" class="Wordle-Message">Жалко! Не успя да познаеш думата 😢
+			<a href="/">Опитай пак</a>
+		</h1>
+		
 		<h1 th:if="${error}" th:text="${error}">Невалидна дума</h1>
-		<h1 th:if="!${gameStop}" th:text="${guesCount}"></h1>
 		<form method="post" th:action="@{/games/{gameId}/guesses(gameId=${game.id})}">
 			<div th:each="guess: ${game.guesses}">
 				<div>
@@ -82,7 +83,7 @@
 						th:classappend="${'Wordle-Match_' + guess.matches.charAt(charStat.index)}">a</span>
 				</div>
 			</div>
-			<div th:if="!${gameStop}">
+			<div th:if="${game.state.name() == 'ONGOING'}">
 				<input name="guess" maxlength="5" autofocus/>
 				<button>Check</button>
 			</div>
